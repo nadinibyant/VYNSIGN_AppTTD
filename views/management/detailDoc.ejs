@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="your-csrf-token-value">
+    <title>Detail Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="/css/sidebars.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style2.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        .kotak1 {
+            border: 1px solid black;
+            height: 450px;
+            background-color: #F3F3F3;
+        }
+
+        .kotak2 {
+            border: 1px solid black;
+            height: 300px;
+            background-color: #D9D9D9;
+        }
+
+        form {
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar1 navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold ms-3" href="#">VYNSIGN</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" id="usernameProfile">
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="/profile">
+                                    <i class="bi bi-person"></i>
+                                    Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/profile/logout" id="btn-logout">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    Sign Out
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="d-flex flex-nowrap vh-100">
+
+        <div class="d-flex flex-column flex-shrink-0 p-3 side" style="width: 250px;">
+            <p class="text-muted">Documents</p>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>
+                    <a href="/management" class="nav-link active text-dark fw-bold bg-light">
+                        <i class="bi bi-database-down"></i>
+                        Management
+                    </a>
+                </li>
+                <br>
+                <p class="text-muted">Signature</p>
+                <li>
+                    <a href="/request" class="nav-link text-dark fw-semibold">
+                        <i class="bi bi-pencil-square"></i>
+                        Request
+                    </a>
+                </li>
+                <li>
+                    <a href="/sent" class="nav-link text-dark fw-semibold">
+                        <i class="bi bi-send"></i>
+                        Sent
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="b-example-divider text-dark">
+            <nav class="navbar navbar2">
+                <div class="container-fluid">
+                    <p class="navbar-brand fw-semibold m-2">Detail Document</p>
+                </div>
+            </nav>
+            <a href="/management"><button type="button" class="btn btn-danger m-3">Back</button></a>
+            <div class="ms-3 mt-3 mb-3 me-4" style="display: flex; flex-direction: column; align-items: center;">
+
+                <br>
+                <embed type="application/pdf" class="w-75" height="500" id="file"></embed>
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+    </script>
+    <script src="/js/sidebars.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const usernameProfile = document.getElementById("usernameProfile");
+            const username = '<%= username %>';
+
+            const gambarProfile = document.createElement("i")
+            gambarProfile.classList.add("bi", "bi-person");
+
+            const teksProfile = document.createTextNode(username);
+
+            usernameProfile.appendChild(gambarProfile);
+            usernameProfile.appendChild(teksProfile);
+
+            const filename = '<%= filename %>';
+            const file = document.getElementById('file')
+            file.setAttribute('src', '/doc/' + filename);
+
+            const btnLogout = document.getElementById('btn-logout');
+            btnLogout.addEventListener('click', async function (event) {
+                event.preventDefault()
+
+                // Buat elemen form sementara
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/profile/logout';
+
+                // Tambahkan elemen input yang diperlukan untuk mengirim permintaan POST
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name =
+                    '_csrf'; // Ubah sesuai dengan nama input yang digunakan di sisi server
+                csrfInput.value = csrfToken;
+                form.appendChild(csrfInput);
+
+                // Tambahkan form ke body dan submit secara otomatis
+                document.body.appendChild(form);
+                form.submit();
+
+                try {
+                    const response = await fetch('/profile/logout', {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        window.location.href = '/signin';
+                    } else {
+                        console.log(data.message);
+                        location.reload()
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
