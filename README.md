@@ -12,20 +12,11 @@
 # Konfigurasi
 1. Buat file `.env` di direktori utama proyek Anda. Isi file tersebut dengan konfigurasi lingkungan yang diperlukan dalam format
   <h6>ACCESS_TOKEN_SECRET = </h6>
-  <h6>DB_HOST = </h6>
-  <h6>DB_USER = </h6>
-  <h6>DB_PASSWORD = </h6>
-  <h6>DB_NAME = </h6>
   
 2. Isi entri `ACCESS_TOKEN_SECRET` dengan nilai kunci rahasia JWT yang Anda inginkan
-3. Isi entri `DB_HOST` , `DB_USER`, `DB_PASSWORD`, dan `DB_NAME` dengan nilai pengkonfigurasian database yang Anda miliki
 
 CONTOH:
 <p>ACCESS_TOKEN_SECRET = hadgfafbsdjfeyg</p>
-<p>DB_HOST = localhost</p>
-<p>DB_USER = iniNamaUsernameDatabase</p>
-<p>DB_PASSWORD = iniPassword</p>
-<p>DB_NAME = iniNamaDatabase</p>
 
 (Catatan : Untuk data dan table yang ada pada database, bisa diimport menggunakan file sql yang tersedia)
 
